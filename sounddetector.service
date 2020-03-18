@@ -1,0 +1,12 @@
+[Unit]
+After=networking.service
+
+[Service]
+User=kbowman
+Group=kbowman
+WorkingDirectory=/home/kbowman/home/sounddetector
+ExecStart=/home/kbowman/home/sounddetector/sounddetector.py
+
+[Install]
+WantedBy=default.target
+
