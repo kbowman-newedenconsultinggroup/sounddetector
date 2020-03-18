@@ -11,8 +11,6 @@ from time import sleep
 from collections import deque
 import paho.mqtt.client as mqtt
 import requests
-import pygame.mixer
-from pygame.mixer import Sound
 import datetime
 import time
 import sys
@@ -48,7 +46,7 @@ resetlength=6
 # How many reset counts until we clear an active alarm?
 clearlength=2
 # Enable blip, beep, and reset debug output
-debug=True
+debug=False
 # Show the most intense frequency detected (useful for configuration)
 frequencyoutput=True
 
@@ -59,10 +57,11 @@ clearcount=0
 tone=False
 
 # what devices are we using
-pd = pyaudio.PyAudio()
-info = pd.get_host_api_info_by_index(0)
-numdevices = info.get('deviceCount')
-for i in range(0, numdevices):
+if debug: 
+    pd = pyaudio.PyAudio()
+    info = pd.get_host_api_info_by_index(0)
+    numdevices = info.get('deviceCount')
+    for i in range(0, numdevices):
         if (pd.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
             print "Input Device id ", i, " - ", pd.get_device_info_by_host_api_device_index(0, i).get('name')
 
@@ -110,11 +109,11 @@ _stream = pa.open(format=pyaudio.paInt16,
                   input=True,
                   frames_per_buffer=NUM_SAMPLES)
 
-#print("Alarm detector working. Press CTRL-C to quit.")
+if debug: print("Alarm detector working. Press CTRL-C to quit.")
 client.publish("sounddetector/state", "online")
 
 while True:
-    timeout = 30 # seconds
+    timeout = 30 # report in to mqtt every 30 seconds
     timeout_start = time.time()
     while time.time() < timeout_start + timeout:
         test = 0
@@ -141,8 +140,8 @@ while True:
           else:
             freqNow = which*SAMPLING_RATE/NUM_SAMPLES
 
-        print "\t\t\t\tfreq=",freqNow,"\t",freqPast
-        print "\t\t\t\tnotes=",notes
+        if debug: print "\t\t\t\tfreq=",freqNow,"\t",freqPast
+        if debug: print "\t\t\t\tnotes=",notes
 
         if max(intensity[(frequencies < maxD5+BANDWIDTH) & (frequencies > minD1-BANDWIDTH )]) > max(intensity[(frequencies < maxD5-1000) & (frequencies > minD1-2000)]) + SENSITIVITY:
           blipcount+=1
@@ -156,7 +155,7 @@ while True:
             if (beepcount>=tonelength):
                 clearcount=0
                 tone=True
-                print "ToneDetected"
+                if debug: print "ToneDetected"
                 beepcount=0
         else:
             blipcount=0
@@ -170,7 +169,7 @@ while True:
                     if debug: print "\t\tclear",clearcount
                     if clearcount>=clearlength:
                         clearcount=0
-                        print "Tone Too Short - Cleared"
+                        if debug: print "Tone Too Short - Cleared"
                         tone=False
 
 #        if minD1 <= freqPast <= maxD5 and abs(freqNow-freqPast) <= 20:
@@ -179,24 +178,24 @@ while True:
             notes.append('F')
          elif freqPast <= maxD1 and minD1 <= freqNow <= maxD1 and notes[-1]!='D1':
             notes.append('D1')
-            #print "You played D1!"
+            if debug: print "You played D1!"
          elif minD5 <= freqPast <= maxD5 and minD5 <= freqNow <= maxD5 and notes[-1]!='D5':
             notes.append('D5')
          elif minD2<=freqPast<=maxD2 and minD2<=freqNow<=maxD2 and notes[-1]!='D2':
             notes.append('D2')
-            #print "You played D2!"
+            if debug: print "You played D2!"
          elif minG<=freqPast<=maxG and minG<=freqNow<=maxG and notes[-1]!='G':
             notes.append('G')
-            #print "You played G!"
+            if debug: print "You played G!"
 
         if notes==doorbell:
-          print "\t\t\t\tDoorbell song!"
+          if debug: print "\t\t\t\tDoorbell song!"
           now = datetime.datetime.now()
           ringtime="{\"datetime\":\"" + now.strftime("%Y-%m-%d %H:%M:%S") + "\"}"
           client.publish("sounddetector/doorbell", ringtime)
           notes.append('G')#append with 'G' to 'reset' notes, this keeps the song from triggering constantly
         if notes==test:
-          print "Test Sequence Activated!"
+          if debug: print "Test Sequence Activated!"
           client.publish("sounddetector", "test") 
           notes.append('G')
 

@@ -24,6 +24,14 @@ All of this can be run on any linux host in the house that has a microphone.  I 
 
 I install two systemd services.  Sample files are in the repo.  The sounddetectorlistener.service is always running.  The sounddetector.service is started and stopped by Home Assistant sending the appropriate ```systemctl (start|stop) sounddetector``` command via mqtt.
 
+You'll need a secrets.py file with:
+
+```
+mqtthost: 'MQTTHOST'
+mqttuser: 'MQTT USER NAME'
+mqttpass: 'MQTT PASSWORD'
+```
+
 Copy and modify the appropriate yaml into your Home Assistant configuration. I display these three components (process control, automation control, last ring time) via a vertical + horizontal card in lovelace.
 
 ## Testing and Tuning
