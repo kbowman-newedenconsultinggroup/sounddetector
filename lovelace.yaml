@@ -1,0 +1,18 @@
+type: vertical-stack
+cards:
+  - entities:
+      - entity: sensor.doorbell_detector
+        icon: 'mdi:doorbell'
+        name: LastRing
+    type: entities
+  - type: horizontal-stack
+    cards:
+      - entities:
+          - entity: automation.alert_when_doorbell_rings
+            name: Alert
+        type: entities
+      - entities:
+          - entity: switch.sound_detector
+            name: Sound Detector Process
+        type: entities
+title: Doorbell

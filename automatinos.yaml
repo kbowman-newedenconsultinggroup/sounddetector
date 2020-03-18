@@ -1,0 +1,14 @@
+- id: alertwhendoorbellrings
+  alias: Alert when doorbell rings
+  description: doorbell detector date changes
+  trigger:
+  - entity_id: sensor.doorbell_detector
+    platform: state
+  condition:
+  action:
+  - data_template:
+      data:
+        url: https://MYEXTERNAL.ZONEMINDER.ORG:PORT/zm/index.php?view=watch&mid=3&scale=25
+      message: Doorbell Is Ringing
+    service: notify.mobile_app_MYMOBILE
+
