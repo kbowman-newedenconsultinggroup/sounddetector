@@ -4,14 +4,14 @@ This is a python script that is used to detect a sequence of specific sounds (no
 
 ## Getting Started
 
-The meat of this is in the sounddetector.py script.  This was stolen from the work of Allen Pan (https://www.raspberrypi.org/blog/zelda-home-automation/) which used Benjamin Chodroff's underlying sound detection to do similar work (https://benchodroff.com/2017/02/18/using-a-raspberry-pi-with-a-microphone-to-hear-an-audio-alarm-using-fft-in-python/) to detect a smoke alarm.  This also uses Chec_603's mqtt bash execution script (https://unix.stackexchange.com/questions/188525/how-to-subscribe-a-bash-script-as-a-mqtt-client) to control the process.
+The meat of this is in the sounddetector.py script.  This was stolen from the work of Allen Pan (https://www.raspberrypi.org/blog/zelda-home-automation/) which used Benjamin Chodroff's underlying sound detection to do similar work (https://benchodroff.com/2017/02/18/using-a-raspberry-pi-with-a-microphone-to-hear-an-audio-alarm-using-fft-in-python/) to detect a water alarm.  This also uses Chec_603's mqtt bash execution script (https://unix.stackexchange.com/questions/188525/how-to-subscribe-a-bash-script-as-a-mqtt-client) to control the process.
 
 This has been tuned for my specific two-tone, rather slow, doorbell.  As Allen and Benjamin show, it's relatively easy to tune for other sounds, or multiple sounds.
 
 The yaml files are examples I use in my Home Assistant Config to expose:
--- The timestamp of the last time the doorbell was detected
--- A switch to turn on/off the detector
--- An automation to notify my mobile when someone rings the doorbell with a link to my front-door camera (actually my garagecamera currently, but will be updated when the front door camera is installed.)
+- The timestamp of the last time the doorbell was detected
+- A switch to turn on/off the detector
+- An automation to notify my mobile when someone rings the doorbell with a link to my front-door camera (actually my garagecamera currently, but will be updated when the front door camera is installed.)
 
 ### Prerequisites
 
@@ -27,9 +27,9 @@ I install two systemd services.  Sample files are in the repo.  The sounddetecto
 You'll need a secrets.py file with:
 
 ```
-mqtthost: 'MQTTHOST'
-mqttuser: 'MQTT USER NAME'
-mqttpass: 'MQTT PASSWORD'
+mqtthost = 'MQTTHOST'
+mqttuser = 'MQTT USER NAME'
+mqttpass = 'MQTT PASSWORD'
 ```
 
 Copy and modify the appropriate yaml into your Home Assistant configuration. I display these three components (process control, automation control, last ring time) via a vertical + horizontal card in lovelace.
@@ -42,7 +42,7 @@ Tuning knobs include the frequencies, bandwidth, and counters.  I left some 'ext
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL.
 
 ## Acknowledgments
 
